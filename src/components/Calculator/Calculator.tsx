@@ -40,26 +40,26 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
     },[state.isCalculate])
 
 
-    const clear = () => {
+    const clear = (): void => {
         dispatch({type: "clear"});
     }
 
-    const addNumber = (number: string) => {
+    const addNumber = (number: string): void => {
         dispatch({type: "number", number})
     };
-    const addPoint = () => {
+    const addPoint = (): void => {
         dispatch({type: "point"})
     };
     const addOperation = (operation: string) => {
         dispatch({type: "operation", operation});
     };
-    const addPercent = () => {
+    const addPercent = (): void => {
         dispatch({type: "percent"});
     }
     const calculate = (): void => {
         dispatch({type: "calculate"});
     }
-    const showHistory = () => {
+    const showHistory = (): void => {
         let history:Array<string | null> = getDataFromLocalStorage();
         dispatch({type:"setHistory", history});
         setHistoryVisible(true)
@@ -67,7 +67,7 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
     const reverse = (): void => {
         dispatch({type: "reverse"})
     }
-    const clearHistory = () => {
+    const clearHistory = (): void => {
         localStorage.clear();
         setHistoryVisible(false);
     }

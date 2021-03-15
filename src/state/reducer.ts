@@ -69,7 +69,7 @@ export const reducer = (state: State, action: ActionTypes) => {
                 return {
                     ...state,
                     calculatingArr: [(state.result * (-1)).toString()],
-                    input: ["(" + (state.result * (-1)).toString() + ")"],
+                    input: [(state.result * (-1)).toString()],
                     isCalculate: false,
                     result: 0
                 }
@@ -93,7 +93,8 @@ export const reducer = (state: State, action: ActionTypes) => {
             };
         case "point":
             let lastSymbol = state.calculatingArr[state.calculatingArr.length - 1];
-            if (!state.isLastActionIsOperation && (state.calculatingArr.length > 0) && (lastSymbol.charAt(lastSymbol.length - 1) !== ".") && !state.isCalculate) {
+            if (!state.isLastActionIsOperation && (state.calculatingArr.length > 0) /*&& (lastSymbol.charAt(lastSymbol.length - 1) !== ".")*/ && !state.isCalculate &&
+            lastSymbol.search("\\.") === -1) {
                 console.log(state.calculatingArr[state.calculatingArr.length - 1])
                 let calculatingArr: Array<string> = [...state.calculatingArr];
                 calculatingArr[calculatingArr.length - 1] = calculatingArr[calculatingArr.length - 1] + ".";
