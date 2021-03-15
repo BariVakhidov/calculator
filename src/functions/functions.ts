@@ -3,7 +3,7 @@ export const getDataFromLocalStorage = ():Array<string | null> => {
 
         for (let i = 0; i < localStorage.length; i++) {
             let key:string|null = localStorage.key(i);
-            if (key !== null && (localStorage.getItem(key) !== null) && key.search("operation") !== null) {
+            if (key !== null && (localStorage.getItem(key) !== null) && key.search("operation") !== -1) {
                 history.push(localStorage.getItem(key));
             }
         }
