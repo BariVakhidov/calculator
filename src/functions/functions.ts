@@ -1,3 +1,5 @@
+import {RefObject} from "react";
+
 export const getDataFromLocalStorage = ():Array<string | null> => {
     let history:Array<string | null> = [];
 
@@ -8,4 +10,9 @@ export const getDataFromLocalStorage = ():Array<string | null> => {
             }
         }
     return history.reverse();
+};
+export const scrollToInput = (inputRef:RefObject<HTMLDivElement>):void => {
+    if (inputRef.current !== null) {
+        inputRef.current.scrollIntoView({behavior: 'smooth'})
+    }
 }

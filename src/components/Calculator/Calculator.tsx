@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from "react";
+import React, {RefObject, useEffect, useReducer, useRef, useState} from "react";
 import cn from "classnames";
 import s from "./Calculator.module.css";
 import historyImg from "../../assets/images/history.svg";
@@ -10,7 +10,7 @@ import equals from "../../assets/images/equal-mathematical-sign.svg";
 import multiply from "../../assets/images/multiply-mathematical-sign.svg";
 import Button from "./Button";
 import {ActionTypes, reducer, State} from "../../state/reducer";
-import {getDataFromLocalStorage} from "../../functions/functions";
+import {getDataFromLocalStorage, scrollToInput} from "../../functions/functions";
 
 let initialState: State = {
     input: ["0"],
@@ -21,23 +21,26 @@ let initialState: State = {
     isCalculate: false,
     history: []
 }
+
 interface Props {
-    isBlack:boolean
+    isBlack: boolean
 }
+
 const Calculator: React.FC<Props> = ({isBlack}) => {
     type Reducer<State, ActionTypes> = (state: State, action: ActionTypes) => State;
 
     const [state, dispatch] = useReducer<Reducer<State, ActionTypes>>(reducer, initialState);
     const [isHistoryShowing, setHistoryVisible] = useState(false);
-
+    const inputRef: RefObject<HTMLDivElement> = React.createRef()
 
     useEffect(() => {
-        if(state.isCalculate) {
+        if (state.isCalculate) {
             localStorage.setItem(`operation${localStorage.length + 1}`, (state.input.join(" ")));
-            let history:Array<string | null> = getDataFromLocalStorage();
-            dispatch({type:"setHistory", history});
+            let history: Array<string | null> = getDataFromLocalStorage();
+            dispatch({type: "setHistory", history});
         }
-    },[state.isCalculate])
+        scrollToInput(inputRef);
+    }, [state.isCalculate, state.calculatingArr, state.result, isHistoryShowing])
 
 
     const clear = (): void => {
@@ -45,7 +48,7 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
     }
 
     const addNumber = (number: string): void => {
-        dispatch({type: "number", number})
+        dispatch({type: "number", number});
     };
     const addPoint = (): void => {
         dispatch({type: "point"})
@@ -60,12 +63,12 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
         dispatch({type: "calculate"});
     }
     const showHistory = (): void => {
-        let history:Array<string | null> = getDataFromLocalStorage();
-        dispatch({type:"setHistory", history});
-        setHistoryVisible(true)
+        let history: Array<string | null> = getDataFromLocalStorage();
+        dispatch({type: "setHistory", history});
+        setHistoryVisible(true);
     }
     const reverse = (): void => {
-        dispatch({type: "reverse"})
+        dispatch({type: "reverse"});
     }
     const clearHistory = (): void => {
         localStorage.clear();
@@ -76,19 +79,19 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
     const thirdArr = ["1", "2", "3"];
 
     return (
-        <div className={cn(s.calculator, {[s.calculatorBlack]:isBlack})}>
+        <div className={cn(s.calculator, {[s.calculatorBlack]: isBlack})}>
             <div className={s.resultCont}>
                 {isHistoryShowing && <div className={s.history}>
                     {state.history.map(item => <span key={Math.random()}>{item}</span>)}
                 </div>}
-                <div className={s.result}>
+                <div className={s.result} >
                     {state.input.join(" ")}
-                    {/* {showResult && <span>={state.result.toFixed(1)}</span>}*/}
                 </div>
-
+                <div ref={inputRef}></div>
             </div>
-            <div className={cn(s.buttonCont,{[s.buttonContBlack]:isBlack} )}>
-                {!(state.input.length === 1 && state.input[0] === "0") ? <Button value={"C"} setInput={clear}  isBLack={isBlack}/> :
+            <div className={cn(s.buttonCont, {[s.buttonContBlack]: isBlack})}>
+                {!(state.input.length === 1 && state.input[0] === "0") ?
+                    <Button value={"C"} setInput={clear} isBLack={isBlack}/> :
                     <Button value={"AC"} setInput={clearHistory} isBLack={isBlack}/>}
                 <Button value={"+/-"} setInput={reverse} isBLack={isBlack}/>
                 <Button value={"%"} setInput={addPercent} isBLack={isBlack}/>
@@ -108,8 +111,9 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
             </div>
             <div className={s.buttonCont}>
                 <Button value={"0"} setInput={addNumber} isBLack={isBlack}/>
-                <button className={cn(s.buttonWhite, {[s.buttonBlack]: isBlack})} onClick={isHistoryShowing ? ()=> setHistoryVisible(false) : showHistory}>
-                    <img src={isBlack? historyWhiteImg : historyImg} alt="" height={20}/>
+                <button className={cn(s.buttonWhite, {[s.buttonBlack]: isBlack})}
+                        onClick={isHistoryShowing ? () => setHistoryVisible(false) : showHistory}>
+                    <img src={isBlack ? historyWhiteImg : historyImg} alt="" height={20}/>
                 </button>
                 <Button value={"."} setInput={addPoint} isBLack={isBlack}/>
                 <Button value={"="} setInput={calculate} img={equals} isBLack={isBlack}/>
