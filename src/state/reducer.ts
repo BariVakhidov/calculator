@@ -187,6 +187,10 @@ export const reducer = (state: State, action: ActionTypes) => {
                                     result = parseFloat(resultArr[i - 3]) - (parseFloat(resultArr[i - 1]) * parseFloat(resultArr[i - 3])) / 100;
                                     resultArr.splice(i - 3, 4, result.toString());
                                 }
+                                else if (resultArr.length === 2 || i===1) {
+                                    result = parseFloat(resultArr[i - 1]) / 100;
+                                    resultArr.splice(i - 1, 2, result.toString());
+                                }
                                 i = -1;
                             }
                             i++;
