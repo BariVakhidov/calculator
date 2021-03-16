@@ -167,7 +167,6 @@ export const reducer = (state: State, action: ActionTypes) => {
             let result = 0;
             let i = 0;
             let input = bracketsCorrector([...state.input]);
-            console.log(resultArr)
             if (resultArr.length !== 1) {
                 while (resultArr.length !== 1) {
                     if (resultArr.find(item => item === "%")) {

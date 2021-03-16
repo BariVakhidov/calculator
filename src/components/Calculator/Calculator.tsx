@@ -31,7 +31,7 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
 
     const [state, dispatch] = useReducer<Reducer<State, ActionTypes>>(reducer, initialState);
     const [isHistoryShowing, setHistoryVisible] = useState(false);
-    const inputRef: RefObject<HTMLDivElement> = React.createRef()
+    const inputRef: RefObject<HTMLDivElement> = useRef(null)
 
     useEffect(() => {
         if (state.isCalculate) {
@@ -39,8 +39,11 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
             let history: Array<string | null> = getDataFromLocalStorage();
             dispatch({type: "setHistory", history});
         }
+    }, [state.isCalculate])
+
+    useEffect(() => {
         scrollToInput(inputRef);
-    }, [state.isCalculate, state.calculatingArr, state.result, isHistoryShowing])
+    }, [state.calculatingArr, state.result, isHistoryShowing])
 
 
     const clear = (): void => {
@@ -49,26 +52,33 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
 
     const addNumber = (number: string): void => {
         dispatch({type: "number", number});
+       /* scrollToInput(inputRef);*/
     };
     const addPoint = (): void => {
-        dispatch({type: "point"})
+        dispatch({type: "point"});
+        // scrollToInput(inputRef);
     };
     const addOperation = (operation: string) => {
         dispatch({type: "operation", operation});
+        // scrollToInput(inputRef);
     };
     const addPercent = (): void => {
         dispatch({type: "percent"});
+       // scrollToInput(inputRef);
     }
     const calculate = (): void => {
         dispatch({type: "calculate"});
+        //scrollToInput(inputRef);
     }
     const showHistory = (): void => {
         let history: Array<string | null> = getDataFromLocalStorage();
         dispatch({type: "setHistory", history});
         setHistoryVisible(true);
+       // scrollToInput(inputRef);
     }
     const reverse = (): void => {
         dispatch({type: "reverse"});
+        //scrollToInput(inputRef);
     }
     const clearHistory = (): void => {
         localStorage.clear();
@@ -84,10 +94,10 @@ const Calculator: React.FC<Props> = ({isBlack}) => {
                 {isHistoryShowing && <div className={s.history}>
                     {state.history.map(item => <span key={Math.random()}>{item}</span>)}
                 </div>}
-                <div className={s.result} >
+                <div className={s.result}>
                     {state.input.join(" ")}
                 </div>
-                <div ref={inputRef}></div>
+                <div ref={inputRef}/>
             </div>
             <div className={cn(s.buttonCont, {[s.buttonContBlack]: isBlack})}>
                 {!(state.input.length === 1 && state.input[0] === "0") ?
